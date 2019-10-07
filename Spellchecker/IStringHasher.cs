@@ -15,6 +15,6 @@ namespace Spellchecker
        * @return hash code for the input string
        */
 
-        int Hash(String s);
+        int Hash(string s);
     }
 }
