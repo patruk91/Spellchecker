@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Spellchecker": {
+      "commandName": "Project",
+      "commandLineArgs": "-better big-input.txt"
+    }
+  }
+}

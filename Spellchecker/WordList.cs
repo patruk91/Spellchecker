@@ -22,7 +22,7 @@ namespace Spellchecker
             }
         }
 
-        public bool Lookup(String word)
+        public bool Lookup(string word)
         {
             return this._hashTable.Lookup(word.ToUpper());
         }

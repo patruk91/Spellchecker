@@ -10,32 +10,32 @@ namespace Spellchecker
         private int _currentChar;
         private string _nextWord;
 
-        public WordLineReader(string var1)
+        public WordLineReader(string line)
         {
-            this._line = var1;
-            if (var1 == null)
+            _line = line;
+            if (line == null)
             {
-                this._nextWord = null;
+                _nextWord = null;
             }
             else
             {
-                this._currentChar = 0;
-                this.ReadNextWord();
+                _currentChar = 0;
+                ReadNextWord();
             }
 
         }
 
         public bool HasNextWord()
         {
-            return this._nextWord != null;
+            return _nextWord != null;
         }
 
         public string NextWord()
         {
-            string var1 = this._nextWord;
-            if (this._nextWord != null)
+            string var1 = _nextWord;
+            if (_nextWord != null)
             {
-                this.ReadNextWord();
+                ReadNextWord();
             }
 
             return var1;
@@ -43,25 +43,26 @@ namespace Spellchecker
 
         private void ReadNextWord()
         {
-            for (this._nextWord = ""; this._currentChar < this._line.Length && !this.IsWordStartingOrEndingLetter(this._line[this._currentChar]); ++this._currentChar)
+            for (_nextWord = ""; _currentChar < _line.Length &&
+                                 !IsWordStartingOrEndingLetter(_line[_currentChar]); ++_currentChar)
             {
             }
 
-            while (this._currentChar < this._line.Length && this.IsWordLetter(this._line[this._currentChar]))
+            while (_currentChar < _line.Length && IsWordLetter(_line[_currentChar]))
             {
-                this._nextWord += this._line[this._currentChar];
-                ++this._currentChar;
+                _nextWord += _line[_currentChar];
+                ++_currentChar;
             }
 
-            if (this._nextWord.Length == 0)
+            if (_nextWord.Length == 0)
             {
-                this._nextWord = null;
+                _nextWord = null;
             }
             else
             {
-                if (!this.IsWordStartingOrEndingLetter(this._nextWord[this._nextWord.Length - 1]))
+                if (!IsWordStartingOrEndingLetter(_nextWord[_nextWord.Length - 1]))
                 {
-                    this._nextWord = this._nextWord.Substring(0, this._nextWord.Length - 1);
+                    _nextWord = _nextWord.Substring(0, _nextWord.Length - 1);
                 }
 
             }
@@ -74,7 +75,7 @@ namespace Spellchecker
 
         private bool IsWordLetter(char var1)
         {
-            return this.IsWordStartingOrEndingLetter(var1) || var1 == '-' || var1 == '\'';
+            return IsWordStartingOrEndingLetter(var1) || var1 == '-' || var1 == '\'';
         }
     }
 }

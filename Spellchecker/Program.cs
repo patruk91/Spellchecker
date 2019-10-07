@@ -13,8 +13,8 @@ namespace Spellchecker
             }
             else
             {
-                string wordsToCheck = args[args.Length - 1];
-                string wordList = "wordlist.txt";
+                string wordsToCheckFileName = args[args.Length - 1];
+                string wordListFileName = "wordlist.txt";
                 IStringHasher stringHasher = null;
                 bool calculateTime = false;
 
@@ -42,7 +42,7 @@ namespace Spellchecker
                                 ShowUsageMessage();
                                 break;
                             }
-                            wordList = args[i];
+                            wordListFileName = args[i];
                             break;
                         default:
                             ShowUsageMessage();
@@ -59,7 +59,7 @@ namespace Spellchecker
                     try
                     {
                         long startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                        (new Checker()).check(wordsToCheck, wordList, stringHasher);
+                        (new Checker()).Check(wordsToCheckFileName, wordListFileName, stringHasher);
                         long endTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                         if (calculateTime)
                         {
