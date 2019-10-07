@@ -23,6 +23,7 @@ namespace Spellchecker
 {
     class WordChecker
     {
+        private WordList _wordList;
         /**
        * Constructor that initializes a new WordChecker with a given WordList.
        *
@@ -31,7 +32,7 @@ namespace Spellchecker
        */
         public WordChecker(WordList wordList)
         {
-
+            this._wordList = wordList;
         }
 
         /**
@@ -43,9 +44,7 @@ namespace Spellchecker
        */
         public bool WordExists(string word)
         {
-            ///////////
-            //by me
-            return false;
+            return _wordList.Lookup(word);
         }
 
         /**
@@ -58,9 +57,32 @@ namespace Spellchecker
        */
         public List<string> GetSuggestions(string word)
         {
-            ////////
-            //be me
-            return new List<string>();
+            List<string> suggestions = new List<string>();
+            AdjacentPairSwap(word, suggestions);
+
+
+            return suggestions;
+        }
+
+        private void AdjacentPairSwap(string word, List<string> suggestions)
+        {
+            for (int i = 0; i < word.Length - 1; i++)
+            {
+                string swappedWord = Swap(word, i);
+                if (WordExists(swappedWord))
+                {
+                    suggestions.Add(swappedWord);
+                }
+            }
+        }
+
+        private string Swap(string word, int index)
+        {
+            StringBuilder stringBuilder = new StringBuilder(word);
+            char temp = stringBuilder[index];
+            stringBuilder[index] = stringBuilder[index + 1];
+            stringBuilder[index + 1] = temp;
+            return stringBuilder.ToString();
         }
     }
 }
