@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Spellchecker
@@ -59,9 +60,96 @@ namespace Spellchecker
         {
             List<string> suggestions = new List<string>();
             AdjacentPairSwap(word, suggestions);
-
+            InsertCharacterIntoWord(word, suggestions);
+            DeleteEachCharacterFromTheWord(word, suggestions);
+            ReplaceEachCharacterFromAlphabet(word, suggestions);
+            SplitWordIntoPairOfWords(word, suggestions);
 
             return suggestions;
+        }
+
+        private void SplitWordIntoPairOfWords(string word, List<string> suggestions)
+        {
+            for (int i = 0; i < word.Length - 1; i++)
+            {
+                string splitWord = SplitWord(word, i, suggestions);
+
+                string[] words = splitWord.Split(" ");
+                if (WordExists(words[0]) && WordExists(words[1]))
+                {
+                    suggestions.Add(splitWord);
+                }
+            }
+        }
+
+        private string SplitWord(string word, int index, List<string> suggestions)
+        {
+            StringBuilder stringBuilder = new StringBuilder(word);
+            stringBuilder.Insert(index, " ");
+            return stringBuilder.ToString();
+        }
+
+        private void ReplaceEachCharacterFromAlphabet(string word, List<string> suggestions)
+        {
+            for (int i = 0; i < word.Length; i++)
+            {
+                for (char letter = 'A'; letter <= 'Z'; letter++)
+                {
+                    string wordWithReplacedCharacter = ReplaceCharacter(word, i, letter);
+                    if (WordExists(wordWithReplacedCharacter) && !suggestions.Contains(wordWithReplacedCharacter))
+                    {
+                        suggestions.Add(wordWithReplacedCharacter);
+                    }
+                }
+            }
+        }
+
+        private string ReplaceCharacter(string word, int index, char letter)
+        {
+            StringBuilder stringBuilder = new StringBuilder(word);
+            stringBuilder[index] = letter;
+            return stringBuilder.ToString();
+        }
+
+        private void DeleteEachCharacterFromTheWord(string word, List<string> suggestions)
+        {
+            for (int i = 0; i < word.Length; i++)
+            {
+                string wordWithDeletedCharacter = DeleteCharacter(i, word);
+                if (WordExists(wordWithDeletedCharacter) && !suggestions.Contains(wordWithDeletedCharacter))
+                {
+                    suggestions.Add(wordWithDeletedCharacter);
+                }
+            }
+        }
+
+        private string DeleteCharacter(int index, string word)
+        {
+            StringBuilder stringBuilder = new StringBuilder(word);
+            stringBuilder.Remove(index, length: 1);
+            return stringBuilder.ToString();
+        }
+
+        private void InsertCharacterIntoWord(string word, List<string> suggestions)
+        {
+            for (int i = 0; i <= word.Length; i++)
+            {
+                for (char letter = 'A'; letter <= 'Z'; letter++)
+                {
+                    string wordWithInsertedCharacter = InsertCharacter(word, i, letter);
+                    if (WordExists(wordWithInsertedCharacter) && !suggestions.Contains(wordWithInsertedCharacter))
+                    {
+                        suggestions.Add(wordWithInsertedCharacter);
+                    }
+                }
+            }
+        }
+
+        private string InsertCharacter(string word, int index, char letter)
+        {
+            StringBuilder stringBuilder = new StringBuilder(word);
+            stringBuilder.Insert(index, letter);
+            return stringBuilder.ToString();
         }
 
         private void AdjacentPairSwap(string word, List<string> suggestions)
@@ -69,7 +157,7 @@ namespace Spellchecker
             for (int i = 0; i < word.Length - 1; i++)
             {
                 string swappedWord = Swap(word, i);
-                if (WordExists(swappedWord))
+                if (WordExists(swappedWord) && !suggestions.Contains(swappedWord))
                 {
                     suggestions.Add(swappedWord);
                 }
