@@ -17,14 +17,14 @@ namespace Spellchecker
                 this._hashTable = new HashTable((int)((double) totalWordsNumber * 1.2D), stringHasher);
 
                 for(int i = 0; i < totalWordsNumber; i++) {
-                    this._hashTable.add(streamReader.ReadLine().Trim().ToUpper());
+                    this._hashTable.Add(streamReader.ReadLine().Trim().ToUpper());
                 }
             }
         }
 
         public bool Lookup(String word)
         {
-            return this._hashTable.lookup(word.ToUpper());
+            return this._hashTable.Lookup(word.ToUpper());
         }
     }
 }
