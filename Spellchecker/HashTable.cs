@@ -25,9 +25,24 @@ namespace Spellchecker
    *        hasher    Object that creates the hash code for a string
    * @see StringHasher
    */
-        public HashTable(int tableSize, IStringHasher hasher)
-        {
+        private int _tableSize;
+        private IStringHasher _stringHasher;
+        private readonly LinkedList<KeyValue>[] elements;
 
+        public HashTable(int tableSize, IStringHasher stringHasher)
+        {
+            this._tableSize = tableSize;
+            this._stringHasher = stringHasher;
+            elements = new LinkedList<KeyValue>[_tableSize];
+        }
+
+        private int GetPositionByHash(int key)
+        {
+            // This function converts somehow the key to an integer between 0 and bucketSize
+            // In Java, hashCode() is a function of Object, so all non-primitive types
+            // can easily be converted to an integer.
+            int position = key % _tableSize;
+            return Math.Abs(position);
         }
 
 
@@ -39,7 +54,47 @@ namespace Spellchecker
        */
         public void Add(string word)
         {
+            // Find out which position of the elements array to use:
+            int key = _stringHasher.Hash(word);
+            int position = GetPositionByHash(key);
 
+            // If the key already exists, replace the old value with the new.
+            // Make a new instance of the KeyValue class, fill it with the key, value parameters, then add it to the list.
+            LinkedList<KeyValue> element = GetElementByPosition(position);
+            if (IsKeyInHashMap(key, word, element, out KeyValue expectedItem))
+            {
+                expectedItem.value = word;
+            }
+            else
+            {
+                element.AddLast(expectedItem);
+            }
+        }
+
+        private bool IsKeyInHashMap(int key, string value, LinkedList<KeyValue> element, out KeyValue expectedItem)
+        {
+            foreach (KeyValue item in element)
+            {
+                if (item.key.Equals(key))
+                {
+                    expectedItem = item;
+                    return true;
+                }
+            }
+            expectedItem = new KeyValue(key, value);
+            return false;
+        }
+
+        private LinkedList<KeyValue> GetElementByPosition(int position)
+        {
+            LinkedList<KeyValue> linkedList = elements[position];
+            if (linkedList == null)
+            {
+                linkedList = new LinkedList<KeyValue>();
+                elements[position] = linkedList;
+            }
+
+            return linkedList;
         }
 
 
@@ -51,10 +106,19 @@ namespace Spellchecker
       */
         public bool Lookup(string word)
         {
-            //by me
+            int key = _stringHasher.Hash(word);
+            int position = GetPositionByHash(key);
+            LinkedList<KeyValue> element = GetElementByPosition(position);
+            foreach (KeyValue item in element)
+            {
+                if (item.key.Equals(key))
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
-
 
         /**
        * Takes a string and removes it from the hash table, if it
@@ -64,7 +128,25 @@ namespace Spellchecker
       */
         public void Remove(string word)
         {
+            int key = _stringHasher.Hash(word);
+            int position = GetPositionByHash(key);
+            LinkedList<KeyValue> element = GetElementByPosition(position);
+            bool itemFound = false;
+            KeyValue foundItem = default(KeyValue);
+            foreach (KeyValue item in element)
+            {
+                if (item.key.Equals(key))
+                {
+                    itemFound = true;
+                    foundItem = item;
+                }
+            }
 
+            if (itemFound)
+            {
+                element.Remove(foundItem);
+            }
         }
     }
+
 }
